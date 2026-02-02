@@ -8,79 +8,82 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --primary: #00ff41; /* Hijau Hacker */
-            --bg: #0d1117; /* Gelap */
-            --panel: #161b22;
-            --accent: #238636;
-        }
-
+        :root { --primary: #00ff41; --bg: #0d1117; --panel: #161b22; --accent: #238636; }
         body { font-family: 'Roboto', sans-serif; background-color: var(--bg); color: #c9d1d9; margin: 0; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; }
-        
         h1 { text-align: center; font-family: 'Orbitron', sans-serif; color: var(--primary); text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); margin-bottom: 5px; }
         .subtitle { text-align: center; color: #8b949e; font-size: 0.9em; margin-bottom: 30px; }
-
-        /* Panel */
-        .panel { background: var(--panel); padding: 20px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
-        /* Input Style */
+        .panel { background: var(--panel); padding: 20px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); position: relative; }
+        
+        /* Form & Inputs */
         .form-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 15px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 12px; color: #8b949e; margin-bottom: 5px; font-weight: bold; }
-        input, select { 
-            width: 100%; padding: 12px; background: #0d1117; border: 1px solid #30363d; 
-            color: white; border-radius: 6px; box-sizing: border-box; font-family: 'Orbitron', sans-serif;
-        }
+        input, select { width: 100%; padding: 12px; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 6px; box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
         input:focus, select:focus { border-color: var(--primary); outline: none; }
 
-        /* Game UI */
-        .binary-box { 
-            text-align: center; font-family: 'Orbitron', sans-serif; font-size: 3.5em; 
-            color: var(--primary); margin: 20px 0; letter-spacing: 5px; 
-            text-shadow: 0 0 15px var(--primary);
-        }
-        
+        /* Game Area */
+        .binary-box { text-align: center; font-family: 'Orbitron', sans-serif; font-size: 3.5em; color: var(--primary); margin: 20px 0; letter-spacing: 5px; text-shadow: 0 0 15px var(--primary); }
         .game-controls { display: flex; gap: 10px; justify-content: center; }
         .answer-input { width: 120px; text-align: center; font-size: 1.5em; border: 2px solid var(--accent); }
         
         .btn { padding: 12px 25px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Orbitron', sans-serif; }
         .btn-check { background: var(--accent); color: white; }
         .btn-check:hover { background: #2ea043; box-shadow: 0 0 10px var(--accent); }
-        
-        .score-display { text-align: center; font-size: 1.2em; margin-top: 10px; }
-        .score-val { color: #f1e05a; font-weight: bold; font-size: 1.4em; }
-
         .btn-submit { width: 100%; background: #1f6feb; color: white; margin-top: 20px; display: none; }
         .btn-submit:hover { background: #388bfd; }
 
-        /* Leaderboard Style */
+        .score-display { text-align: center; font-size: 1.2em; margin-top: 10px; }
+        .score-val { color: #f1e05a; font-weight: bold; font-size: 1.4em; }
+
+        /* Leaderboard */
         .leaderboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
         .rank-table { width: 100%; border-collapse: collapse; }
         .rank-table th { text-align: left; color: #8b949e; font-size: 12px; padding: 10px; border-bottom: 1px solid #30363d; }
         .rank-table td { padding: 12px 10px; border-bottom: 1px solid #21262d; font-size: 14px; }
-        
         .rank-1 { color: #ffd700; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); } 
         .rank-2 { color: #c0c0c0; } 
         .rank-3 { color: #cd7f32; } 
-        
         .loading-lb { text-align: center; color: var(--primary); font-style: italic; padding: 20px; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0.5; } }
+
+        /* Music Button - Dibuat Lebih Mencolok */
+        .music-toggle { 
+            position: absolute; top: 15px; right: 15px; 
+            background: #e74c3c; /* Merah artinya belum nyala */
+            border: 2px solid white; color: white; border-radius: 50%; width: 50px; height: 50px; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px; 
+            box-shadow: 0 0 10px rgba(255,0,0,0.5);
+            z-index: 100;
+            animation: pulse 2s infinite;
+        }
+        .music-toggle:hover { transform: scale(1.1); }
+        
+        .music-on { 
+            background: #27ae60 !important; /* Hijau artinya nyala */
+            box-shadow: 0 0 15px #00ff41; 
+            animation: none;
+        }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>BINARY MASTER</h1>
-    <div class="subtitle">Realtime Leaderboard & Game</div>
+    <div class="subtitle">Realtime Leaderboard | Highest Score Only</div>
 
     <div class="panel">
+        <button class="music-toggle" id="btnMusic" onclick="toggleMusic()" title="Klik untuk nyalakan musik!">🔇</button>
+
         <form name="submit-score" id="gameForm">
             <div class="form-grid">
                 <div class="form-group">
                     <label>KELAS</label>
                     <select name="Kelas" id="inputKelas" required>
-                        <option value="" disabled selected>Pilih Kelas</option>
+                        <option value="" disabled selected>Pilih...</option>
                         <option value="Kelas 7">Kelas 7</option>
                         <option value="Kelas 8">Kelas 8</option>
                         <option value="Kelas 9">Kelas 9</option>
@@ -91,15 +94,12 @@
                     <input type="text" name="Nama Tim" id="inputTim" placeholder="Contoh: Tim Alpha" required>
                 </div>
             </div>
-            
             <label>ANGGOTA TIM</label>
-            <input type="text" name="Nama Anggota" id="inputAnggota" placeholder="Nama anggota 1, Anggota 2..." required>
-            
+            <input type="text" name="Nama Anggota" id="inputAnggota" placeholder="Anggota 1, Anggota 2..." required>
             <input type="hidden" name="Skor" id="inputSkor" value="0">
         </form>
 
         <hr style="border-color: #30363d; opacity: 0.3;">
-
         <div class="score-display">SKOR TIM: <span id="currentScore" class="score-val">0</span></div>
         <div class="binary-box" id="binaryQuestion">000000</div>
         
@@ -107,33 +107,63 @@
             <input type="number" id="userAnswer" class="answer-input" placeholder="???" onkeypress="handleEnter(event)">
             <button onclick="checkAnswer()" class="btn btn-check">JAWAB</button>
         </div>
-
-        <button type="button" class="btn btn-submit" id="btnKirim" onclick="kirimSkor()">
-            UPLOAD SKOR KE SERVER
-        </button>
+        <button type="button" class="btn btn-submit" id="btnKirim" onclick="kirimSkor()">UPLOAD SKOR TERBARU</button>
     </div>
 
     <div class="panel">
         <div class="leaderboard-header">
-            <h3 style="margin:0; font-family:'Orbitron'; color:white;">🏆 TOP 10 GLOBAL</h3>
+            <h3 style="margin:0; font-family:'Orbitron'; color:white;">🏆 TOP 10 (HIGHEST)</h3>
             <button onclick="loadLeaderboard()" style="background:transparent; border:1px solid var(--primary); color:var(--primary); cursor:pointer; padding:5px 10px; border-radius:4px;">🔄 Refresh</button>
         </div>
-        
-        <div id="leaderboard-content">
-            <div class="loading-lb">Menghubungkan ke Server...</div>
-        </div>
+        <div id="leaderboard-content"><div class="loading-lb">Menghubungkan ke Server...</div></div>
     </div>
-
 </div>
 
 <script>
-    // Link Script Kamu SUDAH TERPASANG DI SINI:
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbySOrJSdx1eOMsWwwl9GnTvu2cFa-PFr91vkHvT9goRzafSd7w4oF1RWzCFkOH_PQ2yIw/exec';
+    // --- LINK APPS SCRIPT ANDA ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbySOrJSdx1eOMsWwwl9GnTvu2cFa-PFr91vkHvT9goRzafSd7w4oF1RWzCFkOH_PQ2yIw/exec'; 
 
+    // --- AUDIO SETUP BARU (Menggunakan Google Sound Library & Internet Archive) ---
+    // Suara Benar (Ting!)
+    const audioCorrect = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
+    // Suara Salah (Boing!)
+    const audioWrong = new Audio('https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg');
+    // Musik Loop (Techno)
+    const audioBG = new Audio('https://ia800905.us.archive.org/19/items/FREE_background_music_dhalius/backsound.mp3'); 
+    
+    audioBG.loop = true; 
+    audioBG.volume = 0.5; // Volume 50%
+
+    let isMusicPlaying = false;
     let score = 0;
     let correctAnswer = 0;
 
-    // --- 1. LOCAL STORAGE (Simpan Identitas) ---
+    // --- LOGIKA MUSIK ---
+    function toggleMusic() {
+        const btn = document.getElementById('btnMusic');
+        
+        if (isMusicPlaying) {
+            audioBG.pause();
+            btn.innerHTML = "🔇";
+            btn.classList.remove('music-on');
+        } else {
+            // Browser butuh interaksi user (klik) untuk play
+            audioBG.play()
+                .then(() => {
+                    console.log("Musik bermain!");
+                })
+                .catch(e => {
+                    console.log("Error musik:", e);
+                    alert("Gagal memutar musik. Coba buka di Chrome/Edge.");
+                });
+            
+            btn.innerHTML = "🎵";
+            btn.classList.add('music-on');
+        }
+        isMusicPlaying = !isMusicPlaying;
+    }
+
+    // --- LOGIKA GAME ---
     const iKelas = document.getElementById('inputKelas');
     const iTim = document.getElementById('inputTim');
     const iAnggota = document.getElementById('inputAnggota');
@@ -142,9 +172,12 @@
         if(localStorage.getItem('b_kelas')) iKelas.value = localStorage.getItem('b_kelas');
         if(localStorage.getItem('b_tim')) iTim.value = localStorage.getItem('b_tim');
         if(localStorage.getItem('b_anggota')) iAnggota.value = localStorage.getItem('b_anggota');
-        
         generateQuestion();
-        loadLeaderboard(); // Load data saat buka
+        loadLeaderboard();
+        
+        // Cek audio load
+        audioCorrect.load();
+        audioWrong.load();
     };
 
     [iKelas, iTim, iAnggota].forEach(el => {
@@ -155,7 +188,6 @@
         });
     });
 
-    // --- 2. GAME LOGIC ---
     function generateQuestion() {
         const decimalNum = Math.floor(Math.random() * 63) + 1;
         correctAnswer = decimalNum;
@@ -174,11 +206,19 @@
 
         if (ans === correctAnswer) {
             score += 10;
+            // Play Sound Benar
+            audioCorrect.currentTime = 0; 
+            audioCorrect.play().catch(e => console.log(e));
+            
             Swal.fire({ icon: 'success', title: '+10 Poin!', showConfirmButton: false, timer: 700, backdrop: `rgba(0,0,0,0.4)` });
             generateQuestion();
         } else {
             score -= 5;
             if(score < 0) score = 0;
+            // Play Sound Salah
+            audioWrong.currentTime = 0;
+            audioWrong.play().catch(e => console.log(e));
+
             Swal.fire({ icon: 'error', title: 'Salah!', text: `Jawaban: ${correctAnswer}`, showConfirmButton: false, timer: 1000 });
             generateQuestion();
         }
@@ -188,11 +228,9 @@
         if (score > 0) document.getElementById('btnKirim').style.display = 'block';
     }
 
-    // --- 3. KIRIM SKOR (POST) ---
     function kirimSkor() {
         if(!iKelas.value || !iTim.value) {
-            Swal.fire('Data Belum Lengkap', 'Pilih Kelas dan isi Nama Tim.', 'warning');
-            return;
+            Swal.fire('Ups', 'Isi dulu Kelas dan Nama Tim.', 'warning'); return;
         }
 
         const btn = document.getElementById('btnKirim');
@@ -200,7 +238,7 @@
 
         Swal.fire({
             title: 'Upload Skor?',
-            text: `Skor ${score} akan disimpan.`,
+            text: `Skor ${score} akan diupdate ke Leaderboard.`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#238636',
@@ -209,29 +247,24 @@
             if (result.isConfirmed) {
                 btn.innerHTML = "Mengirim..."; btn.disabled = true;
                 
-                // Kirim Form Data
                 fetch(scriptURL, { method: 'POST', body: new FormData(form)})
                 .then(response => {
-                    btn.innerHTML = "UPLOAD SKOR KE SERVER"; btn.disabled = false;
-                    Swal.fire('Sukses!', 'Data tersimpan di server.', 'success');
-                    
-                    // Reload Leaderboard
+                    btn.innerHTML = "UPLOAD SKOR TERBARU"; btn.disabled = false;
+                    Swal.fire('Sukses!', 'Leaderboard diperbarui (Mengambil skor tertinggimu).', 'success');
                     loadLeaderboard();
                 })
                 .catch(error => {
                     btn.disabled = false;
-                    Swal.fire('Error', 'Gagal koneksi ke server.', 'error');
+                    Swal.fire('Error', 'Gagal koneksi.', 'error');
                 });
             }
         });
     }
 
-    // --- 4. AMBIL LEADERBOARD (GET - REALTIME) ---
     function loadLeaderboard() {
         const container = document.getElementById('leaderboard-content');
         container.innerHTML = '<div class="loading-lb">Mengambil data dari Server...</div>';
 
-        // Panggil Script dengan GET
         fetch(scriptURL)
             .then(response => response.json())
             .then(data => {
@@ -245,31 +278,25 @@
                                 <th width="30%" style="text-align:right">SKOR</th>
                             </tr>
                         </thead>
-                        <tbody>
-                `;
+                        <tbody>`;
 
-                // Render Data (Maksimal 10 baris sudah diatur di script)
                 if (data.length === 0) {
-                    html += `<tr><td colspan="4" style="text-align:center; padding:20px;">Belum ada data skor.</td></tr>`;
+                    html += `<tr><td colspan="4" style="text-align:center; padding:20px;">Belum ada data.</td></tr>`;
                 } else {
                     data.forEach((p, index) => {
-                        let rankClass = '';
-                        let icon = '';
+                        let rankClass = ''; let icon = '';
                         if(index === 0) { rankClass = 'rank-1'; icon = '👑 '; }
                         else if(index === 1) { rankClass = 'rank-2'; icon = '🥈 '; }
                         else if(index === 2) { rankClass = 'rank-3'; icon = '🥉 '; }
 
-                        html += `
-                            <tr class="${rankClass}">
+                        html += `<tr class="${rankClass}">
                                 <td>${index + 1}</td>
                                 <td>${icon}${p.tim}</td>
                                 <td>${p.kelas}</td>
                                 <td style="text-align:right">${p.skor}</td>
-                            </tr>
-                        `;
+                            </tr>`;
                     });
                 }
-
                 html += `</tbody></table>`;
                 container.innerHTML = html;
             })
