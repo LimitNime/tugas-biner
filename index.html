@@ -10,9 +10,10 @@
     <style>
         :root { --primary: #00ff41; --bg: #0d1117; --panel: #161b22; --accent: #238636; }
         body { font-family: 'Roboto', sans-serif; background-color: var(--bg); color: #c9d1d9; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 800px; margin: 0 auto; position: relative; }
+        
         h1 { text-align: center; font-family: 'Orbitron', sans-serif; color: var(--primary); text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #8b949e; font-size: 0.9em; margin-bottom: 30px; }
+        .subtitle { text-align: center; color: #8b949e; font-size: 0.9em; margin-bottom: 20px; }
         
         .panel { background: var(--panel); padding: 20px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); position: relative; }
         
@@ -48,36 +49,37 @@
         .loading-lb { text-align: center; color: var(--primary); font-style: italic; padding: 20px; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0.5; } }
 
-        /* Music Button - Dibuat Lebih Mencolok */
-        .music-toggle { 
-            position: absolute; top: 15px; right: 15px; 
-            background: #e74c3c; /* Merah artinya belum nyala */
-            border: 2px solid white; color: white; border-radius: 50%; width: 50px; height: 50px; 
-            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px; 
-            box-shadow: 0 0 10px rgba(255,0,0,0.5);
-            z-index: 100;
-            animation: pulse 2s infinite;
-        }
-        .music-toggle:hover { transform: scale(1.1); }
+        /* Tombol Musik & Help */
+        .top-controls { position: absolute; top: 0; right: 0; display: flex; gap: 10px; }
         
-        .music-on { 
-            background: #27ae60 !important; /* Hijau artinya nyala */
-            box-shadow: 0 0 15px #00ff41; 
-            animation: none;
+        .icon-btn { 
+            background: #21262d; border: 1px solid #30363d; color: white; border-radius: 50%; width: 40px; height: 40px; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: 0.3s;
         }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .icon-btn:hover { background: #30363d; transform: scale(1.1); }
+        
+        .music-on { background: #238636; border-color: #2ea043; box-shadow: 0 0 10px var(--primary); }
+        .btn-help { background: #1f6feb; border-color: #388bfd; }
+        
+        /* Tutorial Table in SweetAlert */
+        .tutorial-table { width: 100%; border-collapse: collapse; margin-top: 10px; color: #333; }
+        .tutorial-table td { border: 1px solid #ddd; padding: 5px; text-align: center; font-size: 12px; }
+        .bin-val { font-weight: bold; color: #d35400; }
+        .header-val { background: #eee; font-weight:bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="top-controls" style="position: relative; justify-content: flex-end; margin-bottom: 10px;">
+        <button class="icon-btn btn-help" onclick="showHelp()" title="Cara Main">❓</button>
+        <button class="icon-btn" id="btnMusic" onclick="toggleMusic()" title="Musik On/Off">🔇</button>
+    </div>
+
     <h1>BINARY MASTER</h1>
-    <div class="subtitle">Realtime Leaderboard | Highest Score Only</div>
+    <div class="subtitle">Random 6-8 Bit Challenge</div>
 
     <div class="panel">
-        <button class="music-toggle" id="btnMusic" onclick="toggleMusic()" title="Klik untuk nyalakan musik!">🔇</button>
-
         <form name="submit-score" id="gameForm">
             <div class="form-grid">
                 <div class="form-group">
@@ -120,50 +122,66 @@
 </div>
 
 <script>
-    // --- LINK APPS SCRIPT ANDA ---
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwVu0k4nVXqS34ZvBKx8ytbBDqxyD7RBYtCbGoYJC8zr68soFkyD8boxVemyAJKpZxgyA/exec'; 
+    // --- LINK APPS SCRIPT ANDA (Gunakan Link yang Terbaru) ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzHKdmKNu3aQ5rUKFK9zpO2q6ri7qGEfueoa8YWnppihO_88cRL5_L81OLviCSxOHuS/exec'; 
 
-    // --- AUDIO SETUP BARU (Menggunakan Google Sound Library & Internet Archive) ---
-    // Suara Benar (Ting!)
+    // --- AUDIO SETUP ---
     const audioCorrect = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
-    // Suara Salah (Boing!)
     const audioWrong = new Audio('https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg');
-    // Musik Loop (Techno)
     const audioBG = new Audio('https://ia800905.us.archive.org/19/items/FREE_background_music_dhalius/backsound.mp3'); 
     
     audioBG.loop = true; 
-    audioBG.volume = 0.5; // Volume 50%
+    audioBG.volume = 0.5;
 
     let isMusicPlaying = false;
     let score = 0;
     let correctAnswer = 0;
 
+    // --- FUNGSI POPUP PETUNJUK (TUTORIAL UPDATE 8 BIT) ---
+    function showHelp() {
+        Swal.fire({
+            title: '🎓 Cara Bermain',
+            html: `
+                <div style="text-align:left; font-size:14px;">
+                    <p>Ubah <b>Kode Biner (0 & 1)</b> menjadi angka <b>Desimal</b>.</p>
+                    <p><b>Rumus Cepat (8 Bit):</b></p>
+                    <table class="tutorial-table">
+                        <tr class="header-val">
+                            <td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td>
+                        </tr>
+                        <tr>
+                            <td class="bin-val">0</td><td class="bin-val">1</td><td class="bin-val">0</td><td class="bin-val">0</td><td class="bin-val">1</td><td class="bin-val">0</td><td class="bin-val">1</td><td class="bin-val">1</td>
+                        </tr>
+                    </table>
+                    <p style="margin-top:5px; font-size:13px;"><i>Contoh: 64 + 8 + 2 + 1 = <b>75</b></i></p>
+                    <ul style="margin-top:10px;">
+                        <li>✅ Benar: <b>+10 Poin</b></li>
+                        <li>❌ Salah: <b>-5 Poin</b></li>
+                    </ul>
+                </div>
+            `,
+            icon: 'info',
+            confirmButtonText: 'Siap, Gass!',
+            confirmButtonColor: '#238636'
+        });
+    }
+
     // --- LOGIKA MUSIK ---
     function toggleMusic() {
         const btn = document.getElementById('btnMusic');
-        
         if (isMusicPlaying) {
             audioBG.pause();
             btn.innerHTML = "🔇";
             btn.classList.remove('music-on');
         } else {
-            // Browser butuh interaksi user (klik) untuk play
-            audioBG.play()
-                .then(() => {
-                    console.log("Musik bermain!");
-                })
-                .catch(e => {
-                    console.log("Error musik:", e);
-                    alert("Gagal memutar musik. Coba buka di Chrome/Edge.");
-                });
-            
+            audioBG.play().catch(e => alert("Klik interaksi dulu!"));
             btn.innerHTML = "🎵";
             btn.classList.add('music-on');
         }
         isMusicPlaying = !isMusicPlaying;
     }
 
-    // --- LOGIKA GAME ---
+    // --- LOGIKA GAME BARU (RANDOM 6-8 BIT) ---
     const iKelas = document.getElementById('inputKelas');
     const iTim = document.getElementById('inputTim');
     const iAnggota = document.getElementById('inputAnggota');
@@ -175,9 +193,14 @@
         generateQuestion();
         loadLeaderboard();
         
-        // Cek audio load
-        audioCorrect.load();
-        audioWrong.load();
+        audioCorrect.load(); audioWrong.load();
+        
+        setTimeout(() => {
+            if(!sessionStorage.getItem('introShown')) {
+                showHelp();
+                sessionStorage.setItem('introShown', 'true');
+            }
+        }, 500);
     };
 
     [iKelas, iTim, iAnggota].forEach(el => {
@@ -189,10 +212,26 @@
     });
 
     function generateQuestion() {
-        const decimalNum = Math.floor(Math.random() * 63) + 1;
+        // 1. Acak Panjang Bit: Antara 6, 7, atau 8
+        // Math.random() * 3 hasilkan 0-2.99 -> Floor jadi 0, 1, 2 -> Tambah 6 jadi 6, 7, 8
+        const bitLength = Math.floor(Math.random() * 3) + 6; 
+        
+        // 2. Tentukan Angka Maksimal (2 pangkat bitLength - 1)
+        // 6 bit = 63, 7 bit = 127, 8 bit = 255
+        const maxVal = Math.pow(2, bitLength) - 1;
+        
+        // 3. Acak Soal
+        const decimalNum = Math.floor(Math.random() * maxVal) + 1;
         correctAnswer = decimalNum;
+        
+        // 4. Konversi ke Biner
         let bin = decimalNum.toString(2);
-        while (bin.length < 6) bin = "0" + bin;
+        
+        // 5. Padding (Tambah 0 di depan sesuai panjang bit yang terpilih)
+        while (bin.length < bitLength) {
+            bin = "0" + bin;
+        }
+        
         document.getElementById('binaryQuestion').innerText = bin;
         document.getElementById('userAnswer').value = '';
         document.getElementById('userAnswer').focus();
@@ -206,19 +245,13 @@
 
         if (ans === correctAnswer) {
             score += 10;
-            // Play Sound Benar
-            audioCorrect.currentTime = 0; 
-            audioCorrect.play().catch(e => console.log(e));
-            
+            audioCorrect.currentTime = 0; audioCorrect.play().catch(e=>console.log(e));
             Swal.fire({ icon: 'success', title: '+10 Poin!', showConfirmButton: false, timer: 700, backdrop: `rgba(0,0,0,0.4)` });
             generateQuestion();
         } else {
             score -= 5;
             if(score < 0) score = 0;
-            // Play Sound Salah
-            audioWrong.currentTime = 0;
-            audioWrong.play().catch(e => console.log(e));
-
+            audioWrong.currentTime = 0; audioWrong.play().catch(e=>console.log(e));
             Swal.fire({ icon: 'error', title: 'Salah!', text: `Jawaban: ${correctAnswer}`, showConfirmButton: false, timer: 1000 });
             generateQuestion();
         }
@@ -238,7 +271,7 @@
 
         Swal.fire({
             title: 'Upload Skor?',
-            text: `Skor ${score} akan diupdate ke Leaderboard.`,
+            text: `Skor ${score} akan disimpan.`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#238636',
@@ -250,7 +283,7 @@
                 fetch(scriptURL, { method: 'POST', body: new FormData(form)})
                 .then(response => {
                     btn.innerHTML = "UPLOAD SKOR TERBARU"; btn.disabled = false;
-                    Swal.fire('Sukses!', 'Leaderboard diperbarui (Mengambil skor tertinggimu).', 'success');
+                    Swal.fire('Sukses!', 'Leaderboard diperbarui.', 'success');
                     loadLeaderboard();
                 })
                 .catch(error => {
